@@ -49,7 +49,17 @@ relevant_features = {
     "citizenship": "category",
     "gender": "category",
     "industry_code": "numeric",
-    "working_week_per_year": "numeric"
+    "working_week_per_year": "numeric",
+    "wage_per_hour": "numeric",
+    "total_employed": "numeric",
+    "vet_benefit": "numeric",
+    "gains": "numeric",
+    "losses": "numeric",
+    "education": "category",
+    "marital_status": "category",
+    "race": "category",
+    "household_summary": "category",
+    "employment_commitment": "category"
 }
 
 # Encoding dictionaries (Example)
@@ -58,7 +68,12 @@ encoding_dict = {
     "employment_stat": {"Employed": 0, "Unemployed": 1},
     "tax_status": {"Single": 0, "Married": 1},
     "citizenship": {"Citizen": 0, "Non-Citizen": 1},
-    "gender": {"Male": 0, "Female": 1}
+    "gender": {"Male": 0, "Female": 1},
+    "education": {"High School": 0, "Bachelor": 1, "Master": 2, "PhD": 3},
+    "marital_status": {"Single": 0, "Married": 1, "Divorced": 2},
+    "race": {"White": 0, "Black": 1, "Asian": 2, "Other": 3},
+    "household_summary": {"Living Alone": 0, "With Family": 1, "Other": 2},
+    "employment_commitment": {"Full-time": 0, "Part-time": 1, "Unemployed": 2}
 }
 
 # Sidebar for user input
@@ -89,3 +104,4 @@ input_df = input_df[feature_columns]
 if st.sidebar.button("Predict"):
     y_pred = model.predict(input_df)
     st.write(f"### Predicted Income Category: {'Above Limit' if y_pred[0] == 1 else 'Below Limit'}")
+
