@@ -35,6 +35,9 @@ def load_model():
 # Load trained model & features
 model, feature_columns = load_model()
 
+# Display feature columns for debugging
+st.write("Feature columns used by the model:", feature_columns)
+
 # Relevant features for user input
 relevant_features = {
     "age": "numeric",
@@ -63,21 +66,24 @@ st.sidebar.header("User Input Features")
 user_input = {}
 
 for feature, dtype in relevant_features.items():
-    if feature in feature_columns:
+    if any(feature in col for col in feature_columns):  # Ensure feature matches encoded version
         if dtype == "numeric":
             user_input[feature] = st.sidebar.number_input(f"Enter {feature}", value=0.0)
         elif dtype == "category":
-            options = list(encoding_dict[feature].keys())
+            options = list(encoding_dict.get(feature, {}).keys())
             selected_option = st.sidebar.selectbox(f"Select {feature}", options)
-            user_input[feature] = encoding_dict[feature][selected_option]
+            user_input[feature] = encoding_dict.get(feature, {}).get(selected_option, -1)  # Default to -1 for unknown
 
 # Convert input to DataFrame
 input_df = pd.DataFrame([user_input])
 
-# Ensure all columns exist (for models trained with one-hot encoding)
+# Ensure all model features exist in input
 for col in feature_columns:
     if col not in input_df.columns:
-        input_df[col] = 0  # Fill missing encoded features
+        input_df[col] = 0  # Fill missing encoded features with 0
+
+# Keep only columns used by the model
+input_df = input_df[feature_columns]
 
 # Prediction button
 if st.sidebar.button("Predict"):
