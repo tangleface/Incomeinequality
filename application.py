@@ -100,12 +100,6 @@ for col in feature_columns:
 
 # Keep only columns used by the model
 input_df = input_df[feature_columns]
-
-# Prediction button
-if st.sidebar.button("Predict"):
-    y_pred = model.predict(input_df)
-    st.write(f"### Predicted Income Category: {'Above Limit' if y_pred[0] == 1 else 'Below Limit'}")
-
 # Explanation of Model and Feature Selection
 st.subheader("Model Training and Feature Selection")
 st.write("""
@@ -118,4 +112,10 @@ The model used for this prediction is a Random Forest Classifier, which is an en
 
 The model was trained on a dataset that captures various socioeconomic factors and their influence on income, and it was tuned to optimize performance using hyperparameters such as the number of trees and tree depth.
 """)
+# Prediction button
+if st.sidebar.button("Predict"):
+    y_pred = model.predict(input_df)
+    st.write(f"### Predicted Income Category: {'Above Limit' if y_pred[0] == 1 else 'Below Limit'}")
+
+
 
