@@ -8,11 +8,25 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Income Prediction", layout="wide")
 st.title("Income Limit Prediction App")
 
+import os
+import requests
 @st.cache_resource
+MODEL_URL = "https://github.com/tangleface/Incomeinequality/releases/download/v1.0/income_model.joblib"
+MODEL_PATH = "income_model.joblib"
+
 def load_model():
-    model = joblib.load("C:/Users/nabil/OneDrive/Documents/best_model.joblib")
+    # Check if the model file exists, otherwise download it
+    if not os.path.exists(MODEL_PATH):
+        print("Downloading model...")
+        response = requests.get(MODEL_URL)
+        with open(MODEL_PATH, "wb") as f:
+            f.write(response.content)
+
+    # Load the model
+    model = joblib.load(MODEL_PATH)
     features = joblib.load("C:/Users/nabil/OneDrive/Documents/feature_columns.joblib")
-    return model, features
+    return model,features
+
 
 model, feature_columns = load_model()
 
