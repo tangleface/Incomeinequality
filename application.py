@@ -35,15 +35,49 @@ def load_model():
 # Load trained model & features
 model, feature_columns = load_model()
 
+# Relevant features for user input
+relevant_features = {
+    "age": "numeric",
+    "stock_status": "numeric",
+    "mig_year": "numeric",
+    "country_of_birth_father": "category",
+    "employment_stat": "category",
+    "tax_status": "category",
+    "citizenship": "category",
+    "gender": "category",
+    "industry_code": "numeric",
+    "working_week_per_year": "numeric"
+}
+
+# Encoding dictionaries (Example)
+encoding_dict = {
+    "country_of_birth_father": {"USA": 0, "Canada": 1, "Other": 2},
+    "employment_stat": {"Employed": 0, "Unemployed": 1},
+    "tax_status": {"Single": 0, "Married": 1},
+    "citizenship": {"Citizen": 0, "Non-Citizen": 1},
+    "gender": {"Male": 0, "Female": 1}
+}
+
 # Sidebar for user input
 st.sidebar.header("User Input Features")
-
 user_input = {}
-for feature in feature_columns:
-    user_input[feature] = st.sidebar.number_input(f"Enter {feature}", value=0.0)
+
+for feature, dtype in relevant_features.items():
+    if feature in feature_columns:
+        if dtype == "numeric":
+            user_input[feature] = st.sidebar.number_input(f"Enter {feature}", value=0.0)
+        elif dtype == "category":
+            options = list(encoding_dict[feature].keys())
+            selected_option = st.sidebar.selectbox(f"Select {feature}", options)
+            user_input[feature] = encoding_dict[feature][selected_option]
 
 # Convert input to DataFrame
 input_df = pd.DataFrame([user_input])
+
+# Ensure all columns exist (for models trained with one-hot encoding)
+for col in feature_columns:
+    if col not in input_df.columns:
+        input_df[col] = 0  # Fill missing encoded features
 
 # Prediction button
 if st.sidebar.button("Predict"):
